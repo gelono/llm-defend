@@ -37,7 +37,7 @@ class TextClassificationEngine(BaseEngine):
     def _calculate_confidence(self):
         # Determine the confidence based on the score
         if self.output["outcome"] != "UNKNOWN":
-            if self.output["outcome"] == "SAFE":
+            if self.output["outcome"] == "LABEL_0":
                 return 0.0
             else:
                 return 1.0
@@ -64,11 +64,11 @@ class TextClassificationEngine(BaseEngine):
     def initialize(self):
         try:
             model = AutoModelForSequenceClassification.from_pretrained(
-                "laiyer/deberta-v3-base-prompt-injection", cache_dir=self.cache_dir
+                "July24/fmops", cache_dir=self.cache_dir, token="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",
             )
 
             tokenizer = AutoTokenizer.from_pretrained(
-                "laiyer/deberta-v3-base-prompt-injection", cache_dir=self.cache_dir
+                "July24/fmops", cache_dir=self.cache_dir,token="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",
             )
         except Exception as e:
             raise Exception(

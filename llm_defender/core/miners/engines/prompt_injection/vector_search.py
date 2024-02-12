@@ -73,7 +73,7 @@ class VectorEngine(BaseEngine):
                 normalized_mean = sum(normalized_distances) / len(normalized_distances)
 
                 # Interpolate the value between 0.0 and 1.0 based on the normalized_mean
-                interpolated_value = 1.0 - normalized_mean
+                interpolated_value =  normalized_mean
 
                 return interpolated_value
             return 0.5
@@ -108,7 +108,8 @@ class VectorEngine(BaseEngine):
                 makedirs(self.cache_dir)
             except OSError as e:
                 raise OSError(f"Unable to create cache directory: {e}") from e
-            
+
+
         # Client is needed to prepare the engine
         client = self.initialize()
 
@@ -124,12 +125,28 @@ class VectorEngine(BaseEngine):
             if collection.count() > 0:
                 return True
 
+            #dataset = load_dataset(
+            #    "July24/modify_full_dataset_1", cache_dir=self.cache_dir, token="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",
+            #)
+            #filtered_dataset = dataset.filter(lambda x: x["label"] == 1)
+
+            #dataset2 = load_dataset(
+            #    "July24/P_Data_0_1", cache_dir=self.cache_dir, token="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",
+            #)
+            #filtered_dataset2 = dataset2.filter(lambda x: x["label"] == 1)
+
             dataset = load_dataset(
-                "deepset/prompt-injections", cache_dir=self.cache_dir
+                "fmops/prompt-injection-classifier", cache_dir=self.cache_dir,
+                #"July24/prompt-injections-private", cache_dir=self.cache_dir, token="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",
             )
             filtered_dataset = dataset.filter(lambda x: x["label"] == 1)
 
-            # Add training data
+
+            #merged_train_texts = filtered_dataset["train"]["text"] + filtered_dataset2["train"]["text"] + filtered_dataset3["train"]["text"]
+            #merged_test_texts = filtered_dataset["test"]["text"] + filtered_dataset2["test"]["text"] + filtered_dataset3["test"]["text"]
+
+
+       # Add training data
             collection.add(
                 documents=filtered_dataset["train"]["text"],
                 ids=[
