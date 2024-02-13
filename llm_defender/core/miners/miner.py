@@ -108,7 +108,7 @@ class PromptInjectionMiner(BaseNeuron):
         
         self.validator_min_stake = args.validator_min_stake
 
-        self.chromadb_client = VectorEngine().initialize()
+        self.vectorengine = VectorEngine().initialize()
 
         self.model, self.tokenizer = TextClassificationEngine().initialize()
         self.yara_rules = YaraEngine().initialize()
@@ -334,9 +334,11 @@ class PromptInjectionMiner(BaseNeuron):
         engine_confidences.append(text_classification_response["confidence"])
 
         # Execute Vector Search engine
-        vector_engine = VectorEngine(prompt=synapse.prompt)
-        vector_engine.execute(client=self.chromadb_client)
-        vector_response = vector_engine.get_response().get_dict()
+        # vector_engine = VectorEngine.prompt=synapse.prompt
+        #vector_engine = VectorEngine(prompt=synapse.prompt)
+        self.vectorengine.promt=synaps.promt
+	self.vectorengine.execute()
+        vector_response = self.vectorengine.get_response().get_dict()
         output["engines"].append(vector_response)
         engine_confidences.append(vector_response["confidence"])
 
@@ -464,3 +466,29 @@ class PromptInjectionMiner(BaseNeuron):
             bt.logging.error(f"Unable to read the response from the API: {e}")
         except requests.exceptions.ConnectionError as e:
             bt.logging.error(f"Unable to connect to the blacklist API: {e}")
+
+ted weighted confidence: {weighted_sum}. Original confidence: {sum(confidences)/len(confidences)}')
+
+        return overall_score
+
+    def check_remote_blacklist(self):
+        """
+        Retrieves the remote blacklist & updates the hotkey_blacklisted
+        attribute.
+
+        Arguments:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            requests.exceptions.JSONDecodeError:
+                requests.exceptions.JSONDecodeError is raised if the response
+                could not be read from the blacklist API.
+            requests.exceptions.ConnectionError:
+                requests.exceptions.ConnectionError is raised if the function is
+                unable to connect to the blacklist API.
+        """
+
+
